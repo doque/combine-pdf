@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "combine-pdf"
+version = "1.0.0"
+description = "Combine PDF pages into a single document"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pymupdf>=1.23.7",
+]
+
+[project.scripts]
+combine-pdf = "combine:main"
+
+[tool.setuptools]
+py-modules = ["combine"]
