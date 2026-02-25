@@ -1,6 +1,13 @@
 # combine-pdf
 
-Combine PDF pages into a single document. Takes the first page as-is, then combines pages 2-3 side by side.
+Combine PDF pages side-by-side for 2-up A4 printing. Optimized for saving paper.
+
+## How it works
+
+- **Odd page count** (e.g., 3 pages): Page 1 stays full A4 portrait, remaining pages paired side-by-side (2+3, 4+5, etc.)
+- **Even page count** (e.g., 4 pages): All pages paired from start (1+2, 3+4, etc.)
+
+Output is A4 landscape with each source page scaled to A5.
 
 ## Installation
 
@@ -13,20 +20,9 @@ This installs the `combine-pdf` command globally.
 ## Usage
 
 ```bash
-# Single file
 combine-pdf document.pdf
-
-# Multiple files
-combine-pdf doc1.pdf doc2.pdf doc3.pdf
-
-# Single folder (processes all PDFs inside)
-combine-pdf my_folder
-
-# Multiple folders
-combine-pdf folder1 folder2
-
-# Mix of files and folders
-combine-pdf doc1.pdf my_folder doc2.pdf another_folder
+combine-pdf doc1.pdf doc2.pdf folder/
+combine-pdf --help
 ```
 
 After processing, you'll be prompted whether to remove the original files.

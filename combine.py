@@ -4,30 +4,51 @@ import sys
 import shutil
 import fitz  # PyMuPDF
 
+# A4 dimensions in points (landscape for 2-up printing)
+A4_WIDTH = 841.89
+A4_HEIGHT = 595.28
+
 
 def process_pdf(filepath):
-    """Process a single PDF file and return output path if successful."""
+    """Process a single PDF file, combining page pairs side-by-side on A4 landscape."""
     base, ext = os.path.splitext(filepath)
     if ext.lower() != ".pdf":
         return None
 
     doc = fitz.open(filepath)
     new_doc = fitz.open()
+    page_count = len(doc)
 
-    if len(doc) >= 1:
+    # Odd pages: keep page 1 full, pair the rest
+    # Even pages: pair all from the start
+    if page_count % 2 == 1:
+        # First page stays full A4 portrait
         new_doc.insert_pdf(doc, from_page=0, to_page=0)
+        start_idx = 1
+    else:
+        start_idx = 0
 
-    if len(doc) >= 3:
-        w, h = doc[1].rect.width, doc[1].rect.height
-        new_page = new_doc.new_page(width=w * 2, height=h)
-        new_page.show_pdf_page(fitz.Rect(0, 0, w, h), doc, 1)
-        new_page.show_pdf_page(fitz.Rect(w, 0, w * 2, h), doc, 2)
+    # Process remaining pages in pairs
+    for i in range(start_idx, page_count, 2):
+        # Create A4 landscape page
+        new_page = new_doc.new_page(width=A4_WIDTH, height=A4_HEIGHT)
+        half_width = A4_WIDTH / 2
+
+        # Left page
+        left_rect = fitz.Rect(0, 0, half_width, A4_HEIGHT)
+        new_page.show_pdf_page(left_rect, doc, i)
+
+        # Right page if it exists
+        if i + 1 < page_count:
+            right_rect = fitz.Rect(half_width, 0, A4_WIDTH, A4_HEIGHT)
+            new_page.show_pdf_page(right_rect, doc, i + 1)
 
     output_file = f"{base}_output.pdf"
+    output_pages = len(new_doc)
     new_doc.save(output_file)
     new_doc.close()
     doc.close()
-    print(f"Created: {output_file}")
+    print(f"Created: {output_file} ({output_pages} pages from {page_count} originals)")
     return output_file
 
 
@@ -50,10 +71,11 @@ def collect_pdfs_from_path(path):
 
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
         print("Usage: combine-pdf <file|folder> [file|folder ...]")
+        print("  Combines PDF page pairs side-by-side on A4 landscape for 2-up printing")
         print("  Accepts any combination of PDF files and folders containing PDFs")
-        sys.exit(1)
+        sys.exit(0 if len(sys.argv) > 1 else 1)
 
     # Collect all PDF files from arguments
     all_pdfs = []
