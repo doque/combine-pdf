@@ -3,17 +3,18 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "combine-pdf"
+name = "angelflix-scripts"
 version = "1.0.0"
-description = "Combine PDF pages into a single document"
+description = "PDF utilities for combining, printing, and organizing"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
+    "click>=8.0",
     "pymupdf>=1.23.7",
 ]
 
 [project.scripts]
-combine-pdf = "combine:main"
+angelflix = "angelflix.cli:main"
 
-[tool.setuptools]
-py-modules = ["combine"]
+[tool.setuptools.packages.find]
+include = ["angelflix*"]
