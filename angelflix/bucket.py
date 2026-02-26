@@ -43,7 +43,7 @@ def bucket_pdfs_in_folder(folder_path):
 
 
 @click.command()
-@click.argument("folders", nargs=-1, required=True)
+@click.argument("folders", nargs=-1, required=True, type=click.Path(exists=True, file_okay=False))
 def bucket(folders):
     """Bucket PDF files by first letter into subdirectories.
 

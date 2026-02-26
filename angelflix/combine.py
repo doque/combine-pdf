@@ -52,7 +52,7 @@ def process_pdf(filepath):
 
 
 @click.command()
-@click.argument("paths", nargs=-1, required=True)
+@click.argument("paths", nargs=-1, required=True, type=click.Path(exists=True))
 def combine(paths):
     """Combine PDF page pairs side-by-side on A4 landscape.
 

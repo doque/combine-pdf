@@ -43,7 +43,7 @@ def print_file(filepath):
 
 
 @click.command("print")
-@click.argument("paths", nargs=-1, required=True)
+@click.argument("paths", nargs=-1, required=True, type=click.Path(exists=True))
 def print_cmd(paths):
     """Print PDF files to the configured printer.
 
